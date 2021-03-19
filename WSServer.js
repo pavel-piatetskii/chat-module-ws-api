@@ -55,7 +55,14 @@ server.on('connection', wss => {
         if (!rooms.namelist.includes(username)) {
           rooms.namelist.push(username);
           rooms[room].users.push(username);
-          wss.send(JSON.stringify({ type: 'init',  }))
+          wss.send(JSON.stringify({
+            type: 'init',
+            data: { history: 'text' }
+          }));
+        } else {
+          wss.send(JSON.stringify({
+            type: 'userExist'
+          }));
         };
         //connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
         break;
