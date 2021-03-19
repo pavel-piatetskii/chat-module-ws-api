@@ -1,0 +1,24 @@
+{
+  "name": "chat-module-ws-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./WSServer.js",
+  "scripts": {
+    "start": "node ./WSServer.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavel-piatetskii/chat-module-ws-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavel-piatetskii/chat-module-ws-api/issues"
+  },
+  "homepage": "https://github.com/pavel-piatetskii/chat-module-ws-api#readme",
+  "devDependencies": {
+    "ws": "^7.4.4"
+  }
+}
