@@ -51,13 +51,17 @@ server.on('connection', wss => {
         break;
 
       case 'newUser':
-        const { username, room } = data;
+        const { username,room } = data;
         if (!rooms.namelist.includes(username)) {
           rooms.namelist.push(username);
           rooms[room].users.push(username);
           wss.send(JSON.stringify({
             type: 'init',
-            data: { history: 'text' }
+            data: {
+              username, 
+              users: rooms['1'].users,
+              history: rooms['1'].history
+            }
           }));
         } else {
           wss.send(JSON.stringify({
