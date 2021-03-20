@@ -1,35 +1,43 @@
 'use strict'
-//const http = require('http');
 const WebSocket = require('ws');
 
 //const PORT = env.PORT || 80;
 const PORT = 3001;
-//console.log('*** NAMESERVER CREATED')
-
-//console.log('*** CREATING ROOMS');
 
 const server = new WebSocket.Server({ port: PORT })
+let namelist = ['testname'];
 
 const rooms = {
-  'namelist': ['testname'],
   '1': {
     //server: new WebSocket.Server({ port: 3001 }),
     //port: 3001,
-    connections: [],
+    id: '1',
+    name: 'Main Room',
+    image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/greece.png',
+    //connections: [],
     history: [],
-    users: [],
+    users: ['user in main'],
   },
   '2': {
     //server: new WebSocket.Server({ port: 3002 }),
     //port: 3002,
-    connections: [],
+    id: 2,
+    name: 'Offtopic',
+    image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/aztec.png',
+    //connections: [],
     history: [],
-    users: [],
+    users: ['user in offtop'],
   },
-}
+};
+
+const connections = [];
+
+//const sendToAll = function(data) {
+//  
+//}
 
 server.on('connection', wss => {
-  console.log(`New connection on port `)
+  console.log(`New connection`)
   //wss.send(JSON.stringify({ type: 'history', data: history }));
   //connections.push(ws);
   wss.on('message', (message) => {
@@ -37,6 +45,27 @@ server.on('connection', wss => {
     process.stdout.write(type +': ');
     console.log(data)
     switch (type) {
+
+      case 'newUser':
+        const { username, room } = data;
+        if (!namelist.includes(username)) {
+          namelist.push(username);
+          rooms[room].users.push(username);
+          wss.send(JSON.stringify({
+            type: 'init',
+            data: { username, rooms }
+          }));
+          connections.push(wss);
+          connections.map(wss => wss.send(JSON.stringify(
+            { type: 'newUser', room, username }
+          )));
+        } else {
+          wss.send(JSON.stringify({
+            type: 'userExist'
+          }));
+        };
+        //connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
+        break;
 
       case 'newMessage':
         history.push({
@@ -50,26 +79,7 @@ server.on('connection', wss => {
         );
         break;
 
-      case 'newUser':
-        const { username,room } = data;
-        if (!rooms.namelist.includes(username)) {
-          rooms.namelist.push(username);
-          rooms[room].users.push(username);
-          wss.send(JSON.stringify({
-            type: 'init',
-            data: {
-              username, 
-              users: rooms['1'].users,
-              history: rooms['1'].history
-            }
-          }));
-        } else {
-          wss.send(JSON.stringify({
-            type: 'userExist'
-          }));
-        };
-        //connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
-        break;
+
 
       case 'userClosed':
         users = users.filter(user => user != data);
