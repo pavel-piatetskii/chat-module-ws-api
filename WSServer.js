@@ -12,7 +12,7 @@ const rooms = {
     //server: new WebSocket.Server({ port: 3001 }),
     //port: 3001,
     id: '1',
-    name: 'Main Room',
+    name: 'Main Room123',
     image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/greece.png',
     //connections: [],
     history: [],
@@ -53,12 +53,12 @@ server.on('connection', wss => {
           rooms[room].users.push(username);
           wss.send(JSON.stringify({
             type: 'init',
-            data: { username, rooms }
+            data: { username, roomsData: rooms }
           }));
-          connections.push(wss);
           connections.map(wss => wss.send(JSON.stringify(
             { type: 'newUser', room, username }
-          )));
+            )));
+            connections.push(wss);
         } else {
           wss.send(JSON.stringify({
             type: 'userExist'
