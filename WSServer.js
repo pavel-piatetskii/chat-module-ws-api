@@ -9,18 +9,14 @@ let namelist = ['testname'];
 
 const rooms = {
   '1': {
-    //server: new WebSocket.Server({ port: 3001 }),
-    //port: 3001,
     id: '1',
-    name: 'Main Room123',
+    name: 'Main Room',
     image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/greece.png',
     //connections: [],
     history: [],
     users: ['user in main'],
   },
   '2': {
-    //server: new WebSocket.Server({ port: 3002 }),
-    //port: 3002,
     id: 2,
     name: 'Offtopic',
     image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/aztec.png',
@@ -42,12 +38,13 @@ server.on('connection', wss => {
   //connections.push(ws);
   wss.on('message', (message) => {
     const { type, data } = JSON.parse(message);
+    const { room } = data;
     process.stdout.write(type +': ');
     console.log(data)
     switch (type) {
 
       case 'newUser':
-        const { username, room } = data;
+        const { username } = data;
         if (!namelist.includes(username)) {
           namelist.push(username);
           rooms[room].users.push(username);
@@ -56,9 +53,13 @@ server.on('connection', wss => {
             data: { username, roomsData: rooms }
           }));
           connections.map(wss => wss.send(JSON.stringify(
-            { type: 'newUser', room, username }
-            )));
-            connections.push(wss);
+            {
+              type: 'newUser',
+              data: { newUserRoom: room, newUserName: username }
+            }
+          )));
+          connections.push(wss);
+          console.log(connections.length)
         } else {
           wss.send(JSON.stringify({
             type: 'userExist'
@@ -68,24 +69,23 @@ server.on('connection', wss => {
         break;
 
       case 'newMessage':
-        history.push({
-          id: history.length,
-          sender: data.sender,
-          message: data.newMessage,
+        const { sender, newMessage } = data;
+        rooms[room].history.push({
+          id: rooms[room].history.length,
+          sender,
+          message: newMessage,
           time: new Date(),
         });
-        connections.map(ws =>
+        connections.map(wss =>
           wss.send(JSON.stringify({ type, data }))
         );
         break;
 
-
-
       case 'userClosed':
         users = users.filter(user => user != data);
         names = names.filter(user => user != data);
-      default:
-        connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
+      //default:
+      //  connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
     }
   })
 })
