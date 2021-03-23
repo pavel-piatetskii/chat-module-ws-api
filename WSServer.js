@@ -81,9 +81,26 @@ server.on('connection', wss => {
         );
         break;
 
-      case 'userClosed':
-        users = users.filter(user => user != data);
-        names = names.filter(user => user != data);
+      case 'userSwitch':
+        const { userSwitch, oldRoom, newRoom } = data;
+
+        rooms[oldRoom].users = rooms[oldRoom].users.filter(user => 
+          user != userSwitch
+        );
+        connections.map(wss => wss.send(JSON.stringify(
+          {
+            type: 'userLeft',
+            data: { oldUserRoom: oldRoom, oldUserName: userSwitch }
+          }
+        )));
+
+        rooms[newRoom].users.push(userSwitch);
+        connections.map(wss => wss.send(JSON.stringify(
+          {
+            type: 'newUser',
+            data: { newUserRoom: newRoom, newUserName: userSwitch }
+          }
+        )));
       //default:
       //  connections.map(ws => wss.send(JSON.stringify({ type: 'users', data: users })));
     }
