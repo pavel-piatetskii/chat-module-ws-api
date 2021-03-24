@@ -1,3 +1,12 @@
+/**
+ * Handler for a user which switches from one room to another
+ * 1. Delete a username from the current room
+ * 2. Send information about that to all connections
+ * 3. Add username to a new room
+ * 4. Send information about that to all connections
+ * @param {*} serverData 
+ * @param {*} data 
+ */
 const userSwitch = function (serverData, data) {
 
   const { rooms, connections } = serverData;
