@@ -39,7 +39,7 @@ server.on('connection', wss => {
       break;
 
       case 'close':
-        closeConnection(serverData, wss, data, server);
+        closeConnection(serverData, data, server);
     }
   })
 })
