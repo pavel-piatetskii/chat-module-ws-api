@@ -15,7 +15,7 @@ const serverData = {
       users: [],
     },
   },
-  connections: [],
+  //connections: [],
   namelist: [],
 };
 

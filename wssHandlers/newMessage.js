@@ -7,7 +7,7 @@
  * @param {*} serverData 
  * @param {*} data 
  */
-const newMessage = function(serverData, data) {
+const newMessage = function(serverData, data, server) {
 
   const { rooms, connections } = serverData;
   const { sender, newMessage, room } = data;
@@ -18,7 +18,7 @@ const newMessage = function(serverData, data) {
     time: new Date(),
   };
   rooms[room].history.push(messageToSave);
-  connections.map(wss =>
+  server.clients.forEach(wss =>
     wss.send(JSON.stringify({
       type: 'newMessage',
       data: { messageToSave, room }
