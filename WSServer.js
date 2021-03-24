@@ -8,7 +8,7 @@ const { newUser, newMessage, userSwitch, closeConnection } = require('./wssHandl
 const serverData = require('./serverData');
 
 // Start WS server on the port 3001 ('npm run development') or 80 (by default)
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3001;
 const server = new WebSocket.Server({ port: PORT });
 
 /**
