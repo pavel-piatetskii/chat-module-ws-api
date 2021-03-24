@@ -1,30 +1,11 @@
 'use strict'
 const WebSocket = require('ws');
 const { newUser, newMessage, userSwitch } = require('./wssHandlers');
-
+const serverData = require('./serverData')
 const PORT = process.env.PORT || 80;
 const server = new WebSocket.Server({ port: PORT });
 
-const serverData = {
-  rooms: {
-    '1': {
-      id: '1',
-      name: 'Main Room',
-      image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/greece.png',
-      history: [],
-      users: [],
-    },
-    '2': {
-      id: 2,
-      name: 'Offtopic',
-      image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/aztec.png',
-      history: [],
-      users: [],
-    },
-  },
-  connections: [],
-  namelist: [],
-}
+
 
 
 server.on('connection', wss => {
