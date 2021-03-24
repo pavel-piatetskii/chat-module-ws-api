@@ -70,14 +70,15 @@ server.on('connection', wss => {
 
       case 'newMessage':
         const { sender, newMessage } = data;
-        rooms[room].history.push({
+        const messageToSave = {
           id: rooms[room].history.length,
           sender,
           message: newMessage,
           time: new Date(),
-        });
+        };
+        rooms[room].history.push(messageToSave);
         connections.map(wss =>
-          wss.send(JSON.stringify({ type, data }))
+          wss.send(JSON.stringify({ type, data: { messageToSave, room } }))
         );
         break;
 
