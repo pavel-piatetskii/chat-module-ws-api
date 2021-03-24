@@ -1,18 +1,18 @@
 'use strict'
 const WebSocket = require('ws');
 
-//const PORT = env.PORT || 80;
-const PORT = 3001;
+const PORT = process.env.PORT || 80;
+//const PORT = 3001;
+//console.log(process.env.PORT)
 
 const server = new WebSocket.Server({ port: PORT })
-let namelist = ['testname'];
+let namelist = [];
 
 const rooms = {
   '1': {
     id: '1',
     name: 'Main Room',
     image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/greece.png',
-    //connections: [],
     history: [],
     users: ['user in main'],
   },
@@ -20,7 +20,6 @@ const rooms = {
     id: 2,
     name: 'Offtopic',
     image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/aztec.png',
-    //connections: [],
     history: [],
     users: ['user in offtop'],
   },
@@ -34,8 +33,7 @@ const connections = [];
 
 server.on('connection', wss => {
   console.log(`New connection`)
-  //wss.send(JSON.stringify({ type: 'history', data: history }));
-  //connections.push(ws);
+
   wss.on('message', (message) => {
     const { type, data } = JSON.parse(message);
     const { room } = data;
