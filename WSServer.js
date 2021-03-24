@@ -1,6 +1,6 @@
 'use strict'
 const WebSocket = require('ws');
-const { newUser } = require('./wssHandlers/newUser');
+const { newUser, newMessage } = require('./wssHandlers');
 
 const PORT = process.env.PORT || 80;
 const server = new WebSocket.Server({ port: PORT });
@@ -42,17 +42,7 @@ server.on('connection', wss => {
         break;
 
       case 'newMessage':
-        const { sender, newMessage } = data;
-        const messageToSave = {
-          id: rooms[room].history.length,
-          sender,
-          message: newMessage,
-          time: new Date(),
-        };
-        rooms[room].history.push(messageToSave);
-        connections.map(wss =>
-          wss.send(JSON.stringify({ type, data: { messageToSave, room } }))
-        );
+        newMessage(serverData, data);
         break;
 
       case 'userSwitch':

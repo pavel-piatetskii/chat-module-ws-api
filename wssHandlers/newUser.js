@@ -24,4 +24,4 @@ const newUser = function (serverData, wss, data) {
   };
 };
 
-module.exports = { newUser };
+module.exports = newUser;
