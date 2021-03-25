@@ -19,7 +19,8 @@
     "url": "https://github.com/pavel-piatetskii/chat-module-ws-api/issues"
   },
   "homepage": "https://github.com/pavel-piatetskii/chat-module-ws-api#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "ws": "^7.4.4"
   }
 }
