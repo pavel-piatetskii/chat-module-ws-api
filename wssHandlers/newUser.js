@@ -13,24 +13,24 @@
  * @param {*} data 
  */
 
-const newUser = function (serverData, wss, data, server) {
+const newUser = function (serverData, wss, data) {
 
-  const { rooms, namelist, connections } = serverData;
+  const { rooms, activeUsers } = serverData;
   const { username, room } = data;
-  if (!namelist.includes(username)) {
-    namelist.push(username);
+  if (!Object.keys(activeUsers).includes(username)) {
+    activeUsers[username] = wss;
     wss.send(JSON.stringify({
       type: 'init',
       data: { username, roomsData: rooms }
     }));
     rooms[room].users.push(username);
-    server.clients.forEach(wss => wss.send(JSON.stringify(
+    Object.values(activeUsers).map(wss => wss.send(JSON.stringify(
       {
         type: 'newUser',
         data: { newUserRoom: room, newUserName: username }
       }
-    )));
-  } else {
+      )));
+    } else {
     wss.send(JSON.stringify({
       type: 'userExist'
     }));

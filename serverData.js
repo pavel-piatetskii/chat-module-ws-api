@@ -15,8 +15,7 @@ const serverData = {
       users: [],
     },
   },
-  //connections: [],
-  namelist: [],
+  activeUsers: [],
 };
 
 module.exports = serverData;

@@ -7,16 +7,16 @@
  * @param {*} serverData 
  * @param {*} data 
  */
-const userSwitch = function (serverData, data, server) {
+const userSwitch = function (serverData, data) {
 
-  const { rooms, connections } = serverData;
+  const { rooms, activeUsers } = serverData;
   const { userSwitch, oldRoom, newRoom } = data;
 
   rooms[oldRoom].users = rooms[oldRoom].users.filter(user => 
     user != userSwitch
   );
 
-  server.clients.forEach(wss => wss.send(JSON.stringify(
+  Object.values(activeUsers).map(wss => wss.send(JSON.stringify(
     {
       type: 'userLeft',
       data: { oldUserRoom: oldRoom, oldUserName: userSwitch }
@@ -24,7 +24,7 @@ const userSwitch = function (serverData, data, server) {
   )));
 
   rooms[newRoom].users.push(userSwitch);
-  server.clients.forEach(wss => wss.send(JSON.stringify(
+  Object.values(activeUsers).map(wss => wss.send(JSON.stringify(
     {
       type: 'newUser',
       data: { newUserRoom: newRoom, newUserName: userSwitch }
