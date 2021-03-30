@@ -2,7 +2,7 @@
 const WebSocket = require('ws');
 
 // Import wss connection handlers
-const { newUser, newMessage, userSwitch, closeConnection } = require('./wssHandlers');
+const { newUser, newMessage, userSwitch, closeConnection, returningUser } = require('./wssHandlers');
 
 // Import the object which contains names, room and connections data
 const serverData = require('./serverData');
@@ -27,19 +27,23 @@ server.on('connection', wss => {
     switch (type) {
 
       case 'newUser':
-        newUser(serverData, wss, data, server);
+        newUser(serverData, wss, data);
+        break;
+
+      case 'returningUser':
+        returningUser(serverData, wss, data);
         break;
 
       case 'newMessage':
-        newMessage(serverData, data, server);
+        newMessage(serverData, data);
         break;
 
       case 'userSwitch':
-      userSwitch(serverData, data, server);
-      break;
+        userSwitch(serverData, data);
+        break;
 
       case 'close':
-        closeConnection(serverData, data, server);
+        closeConnection(serverData, data);
     }
   })
 })
