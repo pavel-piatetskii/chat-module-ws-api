@@ -1,3 +1,7 @@
+/**
+ * Hardcoded rooms data. Should be replaced by database on 
+ * the project growth
+ */
 const serverData = {
   rooms: {
     '1': {
