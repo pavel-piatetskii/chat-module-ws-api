@@ -8,7 +8,7 @@ const serverData = {
       users: [],
     },
     '2': {
-      id: 2,
+      id: '2',
       name: 'Offtopic',
       image: 'http://forums.civfanatics.com/images/war_academy/civ5/civs/big/aztec.png',
       history: [],

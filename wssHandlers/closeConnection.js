@@ -1,4 +1,4 @@
-const closeConnection = function(serverData, data) {
+const closeConnection = function(serverData, wss, data) {
   const { rooms, activeUsers } = serverData;;
   const { userLeft, room } = data;
 
