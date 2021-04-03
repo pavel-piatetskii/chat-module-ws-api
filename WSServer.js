@@ -1,25 +1,34 @@
 'use strict'
+const fs = require('fs');
+const https = require('https')
 const WebSocket = require('ws');
 
-// Import wss connection handlers
-const { newUser, newMessage, userSwitch, closeConnection, returningUser } = require('./wssHandlers');
+const server = new https.createServer({
+  cert: fs.readFileSync(process.env.CERT),
+  key: fs.readFileSync(process.env.PKEY.replace(/\\n/gm, '\n')),
+  
+});
+
+// Import ws connection handlers
+const { newUser, newMessage, userSwitch, closeConnection, returningUser } = require('./wsHandlers');
 
 // Import the object which contains names, room and connections data
 const serverData = require('./serverData');
 
 // Start WS server on the port 3001 ('npm run development') or 80 (by default)
-const PORT = process.env.PORT || 3001;
-const server = new WebSocket.Server({ port: PORT });
+const PORT = process.env.PORT || 80;
+const wss = new WebSocket.Server({ server });
 
 /**
  * Main switch between WS connection handlers.
  * Each handler is put to a separate file and is triggered by the
  * 'type' field each service message sent by the client side has
  */
-server.on('connection', wss => {
+
+wss.on('connection', ws => {
   console.log(`New connection`);
 
-  wss.on('message', (message) => {
+  ws.on('message', (message) => {
     const { type, data } = JSON.parse(message);
     process.stdout.write(type +': ');
     console.log(data);
@@ -27,11 +36,11 @@ server.on('connection', wss => {
     switch (type) {
 
       case 'newUser':
-        newUser(serverData, wss, data);
+        newUser(serverData, ws, data);
         break;
 
       case 'returningUser':
-        returningUser(serverData, wss, data);
+        returningUser(serverData, ws, data);
         break;
 
       case 'newMessage':
@@ -43,9 +52,10 @@ server.on('connection', wss => {
         break;
 
       case 'close':
-        closeConnection(serverData, wss, data);
+        closeConnection(serverData, data);
     }
   })
 })
 
-console.log("*** SERVER STARTED");
+server.listen(PORT);
+console.log("*** SERVER STARTED on port " + PORT);

@@ -5,7 +5,7 @@
   "main": "./WSServer.js",
   "scripts": {
     "start": "node ./WSServer.js",
-    "dev": "PORT=3001 node ./WSServer.js",
+    "dev": "PORT=3001 CERT=.ssl-cert/cert.pem PKEY=.ssl-cert/key.pem node ./WSServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
