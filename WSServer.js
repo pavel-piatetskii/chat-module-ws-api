@@ -1,13 +1,16 @@
 'use strict'
-const fs = require('fs');
-const https = require('https')
 const WebSocket = require('ws');
 
-const server = new https.createServer({
-  cert: fs.readFileSync(process.env.CERT),
-  key: fs.readFileSync(process.env.PKEY.replace(/\\n/gm, '\n')),
-  
-});
+/** Uncomment for WS Secure
+ const fs = require('fs');
+ const https = require('https')
+ const server = new https.createServer({
+   cert: fs.readFileSync(process.env.CERT),
+   key: fs.readFileSync(process.env.PKEY),
+ });
+ const wss = new WebSocket.Server({ server });
+ */
+
 
 // Import ws connection handlers
 const { newUser, newMessage, userSwitch, closeConnection, returningUser } = require('./wsHandlers');
@@ -15,9 +18,11 @@ const { newUser, newMessage, userSwitch, closeConnection, returningUser } = requ
 // Import the object which contains names, room and connections data
 const serverData = require('./serverData');
 
-// Start WS server on the port 3001 ('npm run development') or 80 (by default)
+// Start WS server on the port 3001 ('npm run dev') or 80 (by default)
 const PORT = process.env.PORT || 80;
-const wss = new WebSocket.Server({ server });
+
+// Create WS Server. Comment out for WS Secure
+const wss = new WebSocket.Server({ port: PORT });
 
 /**
  * Main switch between WS connection handlers.
@@ -57,5 +62,6 @@ wss.on('connection', ws => {
   })
 })
 
-server.listen(PORT);
+//Uncomment for WS Secure
+//server.listen(PORT);
 console.log("*** SERVER STARTED on port " + PORT);
